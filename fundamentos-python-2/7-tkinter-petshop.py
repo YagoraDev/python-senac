@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import messagebox
 
 root = tk.Tk()
 root.geometry("800x700")
@@ -52,12 +53,12 @@ rotulo_especie = tk.Label(
 )
 rotulo_especie.place(x=100, y=200)
 
-opcao = tk.IntVar()
+opcao = tk.StringVar(value="Cachorro")
 
 tk.Radiobutton(
     root,
     text="Cachorro",
-    value=1,
+    value="Cachorro",
     variable=opcao,
     bg="#F3F3F3"
 ).place(x=170, y=200)
@@ -65,7 +66,7 @@ tk.Radiobutton(
 tk.Radiobutton(
     root,
     text="Gato",
-    value=2,
+    value="Gato",
     variable=opcao,
     bg="#F3F3F3"
 ).place(x=170, y=230)
@@ -74,7 +75,7 @@ tk.Radiobutton(
 # CAIXA DE OPÇÕES
 frame_opcoes = tk.LabelFrame(
     root,
-    text="Opções",
+    text="Selecione os Serviços",
     font=("Arial", 12),
     bg="#F3F3F3"
 )
@@ -82,21 +83,28 @@ frame_opcoes.place(x=115, y=280, width=500, height=150)
 
 
 # CHECKBUTTONS
+var_banho = tk.BooleanVar()
+var_tosa = tk.BooleanVar()
+var_unhas = tk.BooleanVar()
+
 tk.Checkbutton(
     frame_opcoes,
     text="Banho",
+    variable=var_banho,
     bg="#F3F3F3"
 ).place(x=20, y=20)
 
 tk.Checkbutton(
     frame_opcoes,
     text="Tosa",
+    variable=var_tosa,
     bg="#F3F3F3"
 ).place(x=20, y=60)
 
 tk.Checkbutton(
     frame_opcoes,
     text="Corte de unhas",
+    variable=var_unhas,
     bg="#F3F3F3"
 ).place(x=20, y=100)
 
@@ -118,11 +126,27 @@ caixa_observacao = tk.Text(
 )
 caixa_observacao.place(x=50, y=485)
 
+# FUNÇÃO AGENDAR
+def agendar():
+    if not caixa_nomeDono.get() or not caixa_nomePet.get():
+        messagebox.showwarning("Atenção", "Preencha Nome do Dono e do Pet!")
+        return
+    servicos = []
+    if var_banho.get(): servicos.append("Banho")
+    if var_tosa.get(): servicos.append("Tosa")
+    if var_unhas.get(): servicos.append("Unhas")
+    msg = (f"Agendamento confirmado!\n"
+           f"Dono: {caixa_nomeDono.get()}\n"
+           f"Pet: {caixa_nomePet.get()} ({opcao.get()})\n"
+           f"Serviços: {', '.join(servicos) or 'Nenhum'}\n"
+           f"Observações: {caixa_observacao.get('1.0', tk.END).strip()}")
+    messagebox.showinfo("Confirmado", msg)
 
 # BOTÃO AGENDAR
 botao_agendar = tk.Button(
     root,
     text="AGENDAR HORÁRIO",
+    command=agendar,
     font=("Arial", 12, "bold"),
     bg="#77DD77",
     fg="white",
